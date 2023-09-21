@@ -33,7 +33,7 @@ function App() {
       target: "es2015",
     });
 
-    console.log("result:", result);
+    setCode(result.code);
   };
 
   return (
@@ -46,7 +46,7 @@ function App() {
       <div>
         <button onClick={onClick}>Submit</button>
       </div>
-      <pre></pre>
+      <pre>{code}</pre>
     </div>
   );
 }
