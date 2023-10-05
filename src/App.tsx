@@ -30,15 +30,15 @@ function App() {
     }
 
     const result = await ref.current.build({
-      entryPoints: ['index.js'],
-      bundle: true, 
+      entryPoints: ["index.js"],
+      bundle: true,
       write: false,
-      plugins: [unpkgPathPlugin]
+      plugins: [unpkgPathPlugin()],
     });
 
-    console.log(result);
+    console.log("result:", result.outputFiles[0].text);
     //update 'code' piece of state
-    setCode(result.code);
+    setCode(result.outputFiles[0].text);
   };
 
   return (
