@@ -33,6 +33,8 @@ function App() {
       target: "es2015",
     });
 
+    console.log(result);
+    //update 'code' piece of state
     setCode(result.code);
   };
 
