@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 
 import * as esbuild from "esbuild-wasm";
+import { unpkgPathPlugin } from "./plugins/unpk_path_plugins";
 
 function App() {
   //store any value inside App with useRef() instead of state
@@ -28,9 +29,11 @@ function App() {
       return;
     }
 
-    const result = await ref.current.transform(input, {
-      loader: "jsx",
-      target: "es2015",
+    const result = await ref.current.build({
+      entryPoints: ['index.js'],
+      bundle: true, 
+      write: false,
+      plugins: [unpkgPathPlugin]
     });
 
     console.log(result);
