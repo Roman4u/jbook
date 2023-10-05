@@ -1,14 +1,33 @@
 import * as esbuild from "esbuild-wasm";
+import axios from 'axios';
 
 export const unpkgPathPlugin = () => {
+  //plugin object
   return {
     name: "unpkg-path-plugin",
     setup(build: esbuild.PluginBuild) {
+      //this function retrieves dependency
       build.onResolve({ filter: /.*/ }, async (args: any) => {
         console.log("onResole", args);
-        return { path: args.path, namespace: "a" };
+
+        if(args.path === 'index.js'){
+            return { path: args.path, namespace: 'a' };
+        };
+
+        if(args.path.includes('./' || args.path.includes('../'))){
+            return {
+                namespace: 'a',
+                path: new URL(
+                    args.path,
+                    'https://unpkg.com' + args.resolveDir + '/'
+                ).href, 
+            };
+        }
+
+        return { path: `https://unpkg.com/${args.path}`, namespace: "a" };
       });
 
+      //this function loads dependency based on what's returned from onResolve()
       build.onLoad({ filter: /.*/ }, async (args: any) => {
         console.log("onLoad", args);
 
@@ -16,16 +35,18 @@ export const unpkgPathPlugin = () => {
           return {
             loader: "jsx",
             contents: `
-              import message from './message';
+              const message = require('nested-test-pkg');
               console.log(message);
             `,
           };
-        } else {
-          return {
-            loader: "jsx",
-            contents: 'export default "hi there!"',
-          };
-        }
+        } 
+
+        const { data, request } = await axios.get(args.path);
+        return{
+            loader: 'jsx',
+            contents: data,
+            resolveDir: new URL('./', request.responseURL).pathname,
+        };
       });
     },
   };
