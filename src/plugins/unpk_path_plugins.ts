@@ -8,7 +8,7 @@ export const unpkgPathPlugin = () => {
     setup(build: esbuild.PluginBuild) {
       //this function retrieves dependency
       build.onResolve({ filter: /.*/ }, async (args: any) => {
-        console.log("onResole", args);
+        console.log("onResolve", args);
 
         if (args.path === "index.js") {
           return { path: args.path, namespace: "a" };
@@ -35,8 +35,9 @@ export const unpkgPathPlugin = () => {
           return {
             loader: "jsx",
             contents: `
-              const message = require('react');
-              console.log(message);
+              import React, { useState } from 'react';
+              import ReactDOM from 'react-dom';
+              console.log(React, useState, ReactDOM);
             `,
           };
         }

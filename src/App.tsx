@@ -40,8 +40,10 @@ function App() {
       },
     });
 
-    console.log("result:", result.outputFiles[0].text);
+    //console.log("result:", result.outputFiles[0].text);
+
     //update 'code' piece of state
+  
     setCode(result.outputFiles[0].text);
   };
 
