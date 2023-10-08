@@ -19,9 +19,8 @@ export const fetchPlugin = (userInput: string) => {
         };
       });
 
-      //loads CSS files from UNPKG
-      build.onLoad({ filter: /.css$/ }, async (args: any) => {
-        //check if data is in user's cache and store in a variable
+      //checks cache
+      build.onLoad({ filter: /.*/ }, async (args: any) => {
         const cachedResult = await fileCache.getItem<esbuild.OnLoadResult>(
           args.path
         );
@@ -30,8 +29,10 @@ export const fetchPlugin = (userInput: string) => {
         if (cachedResult) {
           return cachedResult;
         }
+      });
 
-        //if not in cache then make request to UNPKG
+      //loads CSS files from UNPKG
+      build.onLoad({ filter: /.css$/ }, async (args: any) => {
         const { data, request } = await axios.get(args.path);
 
         const escaped = data
@@ -60,17 +61,6 @@ export const fetchPlugin = (userInput: string) => {
 
       //loads all JS files from UNPKG
       build.onLoad({ filter: /.*/ }, async (args: any) => {
-        //check if data is in user's cache and store in a variable
-        const cachedResult = await fileCache.getItem<esbuild.OnLoadResult>(
-          args.path
-        );
-
-        //if in cache return immediately
-        if (cachedResult) {
-          return cachedResult;
-        }
-
-        //if not in cache then make request to UNPKG
         const { data, request } = await axios.get(args.path);
 
         //create object that holds our data
