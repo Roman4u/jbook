@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 
 import * as esbuild from "esbuild-wasm";
 import { unpkgPathPlugin } from "./plugins/unpk_path_plugins";
+import { fetchPlugin } from "./plugins/fetch_plugin";
 
 function App() {
   //store any value inside App with useRef() instead of state
@@ -33,7 +34,7 @@ function App() {
       entryPoints: ["index.js"],
       bundle: true,
       write: false,
-      plugins: [unpkgPathPlugin(input)],
+      plugins: [unpkgPathPlugin(), fetchPlugin(input)],
       define: {
         "process.env.NODE_ENV": '"production"',
         global: "window",
@@ -43,7 +44,7 @@ function App() {
     //console.log("result:", result.outputFiles[0].text);
 
     //update 'code' piece of state
-  
+
     setCode(result.outputFiles[0].text);
   };
 
